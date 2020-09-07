@@ -1,0 +1,8 @@
+Flask==1.1.2
+PyJWT==1.7.1
+SQLAlchemy==1.1.11
+Flask-HTTPAuth==4.0.0
+Flask-SQLAlchemy==2.4.1
+Werkzeug==1.0.1
+Flask-CORS
+itsdangerous==1.1.0
