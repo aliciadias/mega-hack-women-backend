@@ -123,5 +123,8 @@ Smart Match example:
     [{"area":"front","business":"ti","desc":null,"id":1,"name":"simple"}]
 Note the *token:x* format, "x" is an random password value and it will be ignored on the backend. Also note the dict of dict format, that's how the API expects to receive your request.
 
+## Chat
+Coming soon...
+
 ## Front-End
 The front-end for this plataform can be found at this [repository](https://github.com/lzcee/mega-hack-women)
