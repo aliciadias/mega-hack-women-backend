@@ -87,14 +87,16 @@ def get_token(email):
 @app.route('/api/filter_users', methods=['PUT'])
 def filter_users():
 	business_filter = request.json.get("data").get("business")
-	area_filter = request.json.get("data").get("business")
+	area_filter = request.json.get("data").get("area")
+
 	matches = []
 
-	if area_filter and business_filter:
+	if area_filter is not None and business_filter is not None:
 		users = User.query.filter(
 			User.formal == True
 		).filter(
-			User.business == business_filter,
+			User.business == business_filter
+		).filter(
 			User.area == area_filter
 		).all()
 
@@ -104,7 +106,6 @@ def filter_users():
 		).filter(
 			User.business == business_filter
 		).all()
-
 	elif business_filter is None and area_filter is not None:
 		users = User.query.filter(
 			User.formal == True
@@ -112,12 +113,12 @@ def filter_users():
 			User.area == area_filter
 		).all()
 	else:
-		users = User.query.filter(User.formal).all()
+		users = User.query.filter(User.formal == True).all()
 
-	if users:
+	if users:		
 		for user in users:
 			matches.append({'name': user.name, 'id': user.id, 'business': user.business, 'area': user.area, "desc": user.desc})
-
+	
 	return jsonify(matches)
 
 
@@ -144,6 +145,7 @@ def get_all_users():
 
 @app.route('/api/full_match/<int:id>', methods=['PUT'])
 def get_best_user(id):
+
 	r_user = User.query.get(id)
 	desired_business = request.json.get("data").get("business")
 	desired_area = request.json.get("data").get("area")
@@ -151,18 +153,18 @@ def get_best_user(id):
 	user_area = r_user.area
 	matches = []
 
-	if desired_business:
+	if desired_business is not None:
 		user_business = desired_business
-	if desired_area:
+	if desired_area is not None:
 		user_area = desired_area
-		
+	
 	best_match = User.query.filter(
 		User.id != id,
 		User.formal == True,
 		User.business == user_business,
 		User.area == user_area
 	).limit(3).all()
-		
+	print(best_match)	
 	if best_match:
 		for user in best_match:
 			matches.append({'name': user.name, 'id': user.id, 'business': user.business, 'area': user.area, "desc": user.desc})
@@ -176,8 +178,10 @@ def get_best_user(id):
 				User.area == user_area
 			)
 		).limit(3).all()
-
-		if not best_match:
+		if best_match:
+			for user in best_match:
+				matches.append({'name': user.name, 'id': user.id, 'business': user.business, 'area': user.area, "desc": user.desc})
+		else:
 			best_match = User.query.filter(User.id != id, User.formal == True).limit(3).all()
 			for user in best_match:
 				matches.append({'name': user.name, 'id': user.id, 'business': user.business, 'area': user.area, "desc": user.desc})
